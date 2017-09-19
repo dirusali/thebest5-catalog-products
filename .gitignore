@@ -69,3 +69,8 @@ dump.rdb
 master/local_settings.py
 logs
 celerybeat.pid
+
+# backup files
+*.bak
+*.orig
+*~

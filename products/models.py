@@ -3,6 +3,7 @@ import csv
 import io
 from django.conf import settings
 from django.db.models.signals import post_save
+from model_utils.models import TimeStampedModel
 
 
 def upload_csv_file(instance, filename):
@@ -35,25 +36,22 @@ class Product(models.Model):
     shipping_cost = models.CharField(max_length=150, blank=True)
     stock = models.IntegerField(blank=True, null=True)
 
-    # def __str__(self):
-    #     return self.name
+    def __str__(self):
+        return self.name
     
 
-class CSVUpload(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+class CSVUpload(TimeStampedModel):
     file = models.FileField(upload_to=upload_csv_file)
     shop = models.ForeignKey(Shop)
-    date = models.DateTimeField(auto_now = True)
     completed = models.BooleanField(default=False)
 
     def __str__(self):
-        return '%s - %s' % (self.shop, self.date)
+        return '%s - %s' % (self.shop, self.created)
 
 
 
 def convert_header(csvHeader):
     header_ = csvHeader
-    #cols = [x.replace(' ', '_').lower() for x in header_.split(",")]
     cols = []
     for i, h in enumerate(header_):
         col = h.replace(' ', '_').lower()
@@ -62,7 +60,8 @@ def convert_header(csvHeader):
             header_[i] = 'image'
         if col == 'currencyid':
             header_[i] = 'currency'
-    #cols = [x.replace(' ', '_').lower() for x in header_]
+        if col == 'oldprice':
+            header_[i] = 'old_price'
     return header_
 
 
@@ -74,10 +73,6 @@ def csv_upload_post_save(sender, instance, created, *args, **kwargs):
         reader = csv.reader(io_string, delimiter=';')
         header_ = next(reader)
         header_cols = convert_header(header_)
-        #header_cols = []
-        # for i, _ in enumerate(header_):
-        #         header_cols[i] = header_cols[i].lower ()
-        #         header_cols[i] = header_cols[i].replace (' ', '_')        
         for row in reader:
             try:
                 obj = Product()
@@ -88,13 +83,6 @@ def csv_upload_post_save(sender, instance, created, *args, **kwargs):
             except:
                 print('error')
             
-            # i = 0
-            # #row_item = line[0].split(',')
-            # for item in line:
-            #     key = header_cols[i]
-            #     setattr(new_obj,key,item)
-            #     i+=1
-            #new_obj.save()
         instance.completed = True
         instance.save()
 
