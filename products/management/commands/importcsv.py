@@ -15,18 +15,25 @@ def get_num_lines(file_path):
         lines += 1
     return lines
 
+map_columns = {
+    #BestGear products
+    'picture':'image',
+    'currencyid':'currency',
+    'oldprice':'old_price',
+    #PC Components
+    'url_product':'url',
+    'url_image':'image',
+    'pricenorebate':'old_price',
+}
 def convert_header(csvHeader):
     header_ = csvHeader
     cols = []
     for i, h in enumerate(header_):
         col = h.replace(' ', '_').lower()
-        header_[i] = col
-        if col == 'picture':
-            header_[i] = 'image'
-        if col == 'currencyid':
-            header_[i] = 'currency'
-        if col == 'oldprice':
-            header_[i] = 'old_price'
+        try:
+            header_[i] = map_columns[col]
+        except KeyError:
+            header_[i] = col
     return header_
 
 
@@ -36,17 +43,31 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         # Positional arguments
         parser.add_argument('path')
-        parser.add_argument('shop_id')
+        # Named (optional) arguments
+        parser.add_argument(
+            '--shop-id',
+            dest='shop_id',
+            help='The Shop id. Raise error if not exists.',
+        )        
+        
+        parser.add_argument(
+            '--shop-name',
+            dest='shop_name',
+            help='Get or create a new Shop with name passed as argument',
+        )        
     
 
     def handle(self, *args, **options):
         file_path = options['path']
-        shop_id = options['shop_id']
-        try:
-            shop = Shop.objects.get(pk=shop_id)
-            self.stdout.write("Begin process of import products to shop %s " % shop.name)
-        except Shop.DoesNotExist:
-            raise CommandError ("Shop with Id %s doesnt exist." % shop_id)
+        if options['shop_name']:
+            shop, created = Shop.objects.get_or_create(name=options['shop_name'])
+        if options['shop_id']:            
+            shop_id = options['shop_id']
+            try:
+                shop = Shop.objects.get(pk=shop_id)
+                self.stdout.write("Begin process of import products to shop %s " % shop.name)
+            except Shop.DoesNotExist:
+                raise CommandError ("Shop with Id %s doesnt exist." % shop_id)
         
         if not os.path.exists(file_path):
             raise CommandError ("The file %s doesnt exist." % file_path)

@@ -15,7 +15,7 @@ admin.site.register(Shop, ShopAdmin)
 
 
 class ProductAdmin(admin.ModelAdmin):
-    pass
-
+    list_display = ('name', 'ean', 'shop')
+    list_filter = ('shop',)
+    
 admin.site.register(Product, ProductAdmin)
-
