@@ -3,7 +3,7 @@ import csv
 import io
 import mmap
 from django.core.management.base import BaseCommand, CommandError
-from products.models import Product, Shop, convert_header
+from products.models import Product, Shop, CSVUpload
 from tqdm import tqdm
 
 def get_num_lines(file_path):
@@ -14,6 +14,21 @@ def get_num_lines(file_path):
     while buf.readline():
         lines += 1
     return lines
+
+def convert_header(csvHeader):
+    header_ = csvHeader
+    cols = []
+    for i, h in enumerate(header_):
+        col = h.replace(' ', '_').lower()
+        header_[i] = col
+        if col == 'picture':
+            header_[i] = 'image'
+        if col == 'currencyid':
+            header_[i] = 'currency'
+        if col == 'oldprice':
+            header_[i] = 'old_price'
+    return header_
+
 
 class Command(BaseCommand):
     help = 'Import a csv into `Product` database.'
@@ -29,13 +44,13 @@ class Command(BaseCommand):
         shop_id = options['shop_id']
         try:
             shop = Shop.objects.get(pk=shop_id)
+            self.stdout.write("Begin process of import products to shop %s " % shop.name)
         except Shop.DoesNotExist:
             raise CommandError ("Shop with Id %s doesnt exist." % shop_id)
         
         if not os.path.exists(file_path):
             raise CommandError ("The file %s doesnt exist." % file_path)
         
-        self.stdout.write("Begin process of import products ...")
         with open(file_path, 'rb') as file:
             decoded_file = file.read().decode('utf-8')
             io_string = io.StringIO(decoded_file)
@@ -50,5 +65,8 @@ class Command(BaseCommand):
                         setattr(obj, header_cols[i], field)
                     obj.save()
                 except:
-                    pass
-        self.stdout.write("Finish process...")
+                    self.stdout.write(";".join(row))
+        csvfile = CSVUpload(file=file_path, shop=shop, completed=True)
+        csvfile.save()
+        self.stdout.write("Process finished!")
+        
