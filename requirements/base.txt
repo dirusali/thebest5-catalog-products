@@ -3,5 +3,7 @@ Pillow==4.2.1
 tqdm==4.15.0
 bpython==0.16
 django-model-utils==3.0.0
+djangorestframework==3.6.4
+django-filter==1.0.4
 
 
