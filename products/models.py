@@ -1,8 +1,4 @@
 from django.db import models
-import csv
-import io
-from django.conf import settings
-from django.db.models.signals import post_save
 from model_utils.models import TimeStampedModel
 
 
@@ -23,7 +19,7 @@ class Product(models.Model):
     old_price = models.FloatField(blank=True, null=True)
     currency = models.CharField(max_length=3,blank=True)
     name = models.CharField(max_length=255,blank=True)
-    description = models.CharField(max_length=500,blank=True)
+    description = models.TextField(blank=True)
     upc = models.CharField(max_length=150, blank=True)
     ean = models.CharField(max_length=13, blank=True)
     image = models.URLField(blank=True)
@@ -31,7 +27,7 @@ class Product(models.Model):
     stock = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
-        return self.name
+        return "<Product> %s - %s %s | %s" % (self.name, self.currency, self.price, self.shop)
     
 
 class CSVUpload(TimeStampedModel):

@@ -17,5 +17,6 @@ admin.site.register(Shop, ShopAdmin)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('name', 'ean', 'shop')
     list_filter = ('shop',)
+    search_fields = ('name',)
     
 admin.site.register(Product, ProductAdmin)
