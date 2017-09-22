@@ -1,10 +1,8 @@
 from django.conf.urls import url, include
 from rest_framework import routers
-from .routers import CustomReadOnlyRouter
 from . import views
 
 router = routers.DefaultRouter()
-#router = CustomReadOnlyRouter()
 router.register(r'products', views.ProductViewSet)
 router.register(r'shops', views.ShopViewSet)
 
