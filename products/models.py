@@ -1,9 +1,4 @@
 from django.db import models
-from model_utils.models import TimeStampedModel
-
-
-def upload_csv_file(instance, filename):
-    return "csv/{0}/{1}".format(instance.shop.id,filename)
 
 class Shop(models.Model):
     name = models.CharField(max_length=150)
@@ -11,7 +6,7 @@ class Shop(models.Model):
 
     def __str__(self):
         return self.name
-
+    
 class Product(models.Model):
     shop = models.ForeignKey(Shop)
     url = models.URLField()
@@ -30,13 +25,6 @@ class Product(models.Model):
         return "<Product> %s - %s %s | %s" % (self.name, self.currency, self.price, self.shop)
     
 
-class CSVUpload(TimeStampedModel):
-    file = models.FileField(upload_to=upload_csv_file)
-    shop = models.ForeignKey(Shop)
-    completed = models.BooleanField(default=False)
-
-    def __str__(self):
-        return '%s - %s' % (self.shop, self.created)
 
 
 

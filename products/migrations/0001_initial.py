@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
             name='CSVUpload',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('file', models.FileField(upload_to=products.models.upload_csv_file)),
+                ('file', models.FileField(upload_to='csv/')),
                 ('date', models.DateTimeField(auto_now=True)),
                 ('completed', models.BooleanField(default=False)),
             ],

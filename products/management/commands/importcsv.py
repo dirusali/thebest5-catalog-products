@@ -3,7 +3,7 @@ import csv
 import io
 import mmap
 from django.core.management.base import BaseCommand, CommandError
-from products.models import Product, Shop, CSVUpload
+from products.models import Product, Shop
 from tqdm import tqdm
 
 def get_num_lines(file_path):
@@ -39,7 +39,6 @@ def convert_header(csvHeader):
             header_[i] = col
     return header_
 
-
 class Command(BaseCommand):
     help = 'Import a csv into `Product` database.'
 
@@ -57,24 +56,40 @@ class Command(BaseCommand):
             '--shop-name',
             dest='shop_name',
             help='Get or create a new Shop with name passed as argument',
-        )        
-    
+        )
 
+        parser.add_argument(
+            '--no-delete-products',
+            action='store_true',
+            dest='no_delete_products',
+            default=False,
+            help='By default the process delete all the previous existing products for the shop given as argument. If --no-delete-products is given, the command will no delete any product before the insert',
+        )
+        
     def handle(self, *args, **options):
         file_path = options['path']
         if options['shop_name']:
             shop, created = Shop.objects.get_or_create(name=options['shop_name'])
-        if options['shop_id']:            
+        if options['shop_id']:
             shop_id = options['shop_id']
             try:
                 shop = Shop.objects.get(pk=shop_id)
-                self.stdout.write("Begin process of import products to shop %s " % shop.name)
             except Shop.DoesNotExist:
                 raise CommandError ("Shop with Id %s doesnt exist." % shop_id)
         
         if not os.path.exists(file_path):
             raise CommandError ("The file %s doesnt exist." % file_path)
+
+        products_count = Product.objects.filter(shop=shop).count()
+        self.stdout.write("There are %d existing products for the shop %s ... " % (products_count, shop.name))
+        if not options['no_delete_products']:
+            #first delete all existing products.
+            self.stdout.write("Delete previously existing products for shop %s ... " % shop.name)
+            #Product.objects.filter(shop=shop).delete()
+            self.stdout.write("Delete previously existing products for shop %s ... DONE " % shop.name)
+            self.stdout.write("-------------------------------------------------------- ")
         
+        self.stdout.write("Begin process of import products to shop %s " % shop.name)
         with open(file_path, 'rb') as file:
             decoded_file = file.read().decode('utf-8')
             io_string = io.StringIO(decoded_file)
@@ -90,7 +105,5 @@ class Command(BaseCommand):
                     obj.save()
                 except:
                     self.stdout.write(";".join(row))
-        csvfile = CSVUpload(file=file_path, shop=shop, completed=True)
-        csvfile.save()
         self.stdout.write("Process finished!")
         
