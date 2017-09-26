@@ -18,18 +18,20 @@ def get_num_lines(file_path):
 # This dictionary contains specific headers conversions for each Shop.
 map_columns = {
     #BestGear products
+    'id':'product_id',
     'picture':'image',
     'currencyid':'currency',
     'oldprice':'old_price',
     #PC Components
+    'sku':'product_id',
     'url_product':'url',
     'url_image':'image',
     'pricenorebate':'old_price',
 }
 
-def convert_header(csvHeader):
+def convert_header(csv_header):
     """ This funcion converts a word header to the convenient for our Product model """
-    header_ = csvHeader
+    header_ = csv_header
     cols = []
     for i, h in enumerate(header_):
         col = h.replace(' ', '_').lower()

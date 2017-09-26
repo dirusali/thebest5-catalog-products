@@ -20,3 +20,5 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/', include('products.urls'))
 ]
+
+admin.site.site_header = 'Catalog Product API'
