@@ -24,7 +24,7 @@ def isfloat(value):
 
 # This dictionary contains specific headers conversions for each Shop.
 map_columns = {
-    #BestGear products
+    #Admitad products: BestGear, TOMTOP, Banggood
     'id':'product_id',
     'picture':'image',
     'currencyid':'currency',

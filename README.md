@@ -19,6 +19,16 @@ This will import each product of the catalog to the shop with the ID given as pa
 
 See python manage.py importcsv -h for help.
 
+### Custom column delimiter: ###
+In order to use a custom delimiter, you can add the argument --csv-column-delimiter. 
+By default the command uses semicolon as field delimiter.
+
+For example `python manage.py importcsv products.csv --shop-name 'FNAC' --csv-column-delimiter '|'`
+
+
+
+
+
 
 
 
