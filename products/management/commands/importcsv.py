@@ -87,7 +87,7 @@ class Command(BaseCommand):
         if not options['no_delete_products']:
             #first delete all existing products.
             self.stdout.write("Delete previously existing products for shop %s ... " % shop.name)
-            #Product.objects.filter(shop=shop).delete()
+            Product.objects.filter(shop=shop).delete()
             self.stdout.write("Delete previously existing products for shop %s ... DONE " % shop.name)
             self.stdout.write("-------------------------------------------------------- ")
         
