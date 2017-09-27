@@ -15,9 +15,16 @@ def get_num_lines(file_path):
         lines += 1
     return lines
 
+def isfloat(value):
+  try:
+    float(value)
+    return True
+  except:
+    return False
+
 # This dictionary contains specific headers conversions for each Shop.
 map_columns = {
-    #BestGear products
+    #Admitad products: BestGear, TOMTOP, Banggood
     'id':'product_id',
     'picture':'image',
     'currencyid':'currency',
@@ -27,6 +34,13 @@ map_columns = {
     'url_product':'url',
     'url_image':'image',
     'pricenorebate':'old_price',
+    #FNAC
+    'tdproductid':'product_id',
+    'producturl':'url',
+    'imageurl':'image',
+    'currencyid':'currency',
+    'previousprice':'old_price',
+    'shippingcost':'shipping_cost',
 }
 
 def convert_header(csv_header):
@@ -53,6 +67,14 @@ class Command(BaseCommand):
             dest='shop_id',
             help='The Shop id. Raise error if not exists.',
         )        
+
+        parser.add_argument(
+            '--csv-column-delimiter',
+            dest='column_delimiter',
+            default=';',
+            help='Column delimiter to parse the csv file. By default it is semicolon',
+        )        
+        
         
         parser.add_argument(
             '--shop-name',
@@ -92,10 +114,11 @@ class Command(BaseCommand):
             self.stdout.write("-------------------------------------------------------- ")
         
         self.stdout.write("Begin process of import products to shop %s " % shop.name)
+        self.stdout.write("Column delimiter to use is %s ..." % options['column_delimiter'])
         with open(file_path, 'rb') as file:
             decoded_file = file.read().decode('utf-8')
             io_string = io.StringIO(decoded_file)
-            reader = csv.reader(io_string, delimiter=';')
+            reader = csv.reader(io_string, delimiter=options['column_delimiter'])
             header_ = next(reader)
             header_cols = convert_header(header_)
             for row in tqdm(reader, total=get_num_lines(file_path)):
@@ -103,9 +126,13 @@ class Command(BaseCommand):
                     obj = Product()
                     obj.shop = shop
                     for i, field in enumerate(row):
+                        if header_cols[i] == 'price' or header_cols[i] == 'old_price':
+                            if not isfloat(field):
+                                field = None
                         setattr(obj, header_cols[i], field)
                     obj.save()
-                except:
-                    self.stdout.write(";".join(row))
+                except Exception as e:
+                    self.stdout.write(e)
+                    self.stdout.write(options['column_delimiter'].join(row))
         self.stdout.write("Process finished!")
         
