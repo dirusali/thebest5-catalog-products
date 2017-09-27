@@ -18,7 +18,7 @@ class Product(models.Model):
     description = models.TextField(blank=True)
     upc = models.CharField(max_length=12, blank=True)
     ean = models.CharField(max_length=13, blank=True)
-    image = models.URLField(blank=True)
+    image = models.URLField(max_length=2000, blank=True)
     shipping_cost = models.CharField(max_length=150, blank=True)
     stock = models.IntegerField(blank=True, null=True)
 
