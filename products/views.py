@@ -5,7 +5,6 @@ from django_filters import rest_framework as filters
 from .models import Product, Shop
 from .serializers import ProductSerializer, ShopSerializer
 
-
 class ProductFilter(filters.FilterSet):
     name = filters.CharFilter(lookup_expr=['icontains','exact', 'iexact'])
 
@@ -21,7 +20,7 @@ class ProductViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = ProductSerializer
     filter_backends = (filters.DjangoFilterBackend, SearchFilter)
     filter_class = ProductFilter
-    search_fields = ('name',)
+    search_fields = ('@name','@description')
 
 class ShopViewSet(viewsets.ReadOnlyModelViewSet):
     """
