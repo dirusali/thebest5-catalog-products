@@ -131,8 +131,7 @@ class Command(BaseCommand):
                                 field = None
                         setattr(obj, header_cols[i], field)
                     obj.save()
-                except Exception as e:
-                    self.stdout.write(e)
+                except:
                     self.stdout.write(options['column_delimiter'].join(row))
         self.stdout.write("Process finished!")
         
