@@ -134,4 +134,4 @@ class Command(BaseCommand):
                 except:
                     self.stdout.write(options['column_delimiter'].join(row))
         self.stdout.write("Process finished!")
-        
+
