@@ -1,10 +1,9 @@
 from django.shortcuts import render
 from rest_framework import viewsets, generics
-from rest_framework.filters import SearchFilter
 from django_filters import rest_framework as filters
 from .models import Product, Shop
 from .serializers import ProductSerializer, ShopSerializer
-
+from .filters import FullTextSearchFilter
 
 class ProductFilter(filters.FilterSet):
     name = filters.CharFilter(lookup_expr=['icontains','exact', 'iexact'])
@@ -19,9 +18,9 @@ class ProductViewSet(viewsets.ReadOnlyModelViewSet):
     """
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    filter_backends = (filters.DjangoFilterBackend, SearchFilter)
+    filter_backends = (filters.DjangoFilterBackend, FullTextSearchFilter)
     filter_class = ProductFilter
-    search_fields = ('name',)
+    search_fields = ('name', 'description')
 
 class ShopViewSet(viewsets.ReadOnlyModelViewSet):
     """
