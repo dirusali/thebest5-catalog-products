@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.postgres.search import SearchVectorField
+
 
 class Shop(models.Model):
     name = models.CharField(max_length=150)
@@ -22,6 +24,7 @@ class Product(models.Model):
     image = models.URLField(max_length=2000, blank=True)
     shipping_cost = models.CharField(max_length=150, blank=True)
     stock = models.IntegerField(blank=True, null=True)
+    search_vector = SearchVectorField(null=True)
 
     def __str__(self):
         return "<Product> %s - %s %s | %s" % (self.name, self.currency, self.price, self.shop)
