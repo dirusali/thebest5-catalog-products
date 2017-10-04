@@ -33,6 +33,6 @@ class FullTextSearchFilter(SearchFilter):
         # queryset = queryset.model.objects.annotate(rank=SearchRank(vector, query)).filter(rank__gte=0.8).order_by('-rank')[:20]
 
         query = SearchQuery(params)
-        queryset = queryset.model.objects.annotate(rank=SearchRank(F('search_vector'), query)).filter(search_vector=query).order_by('-rank')[:20]
+        queryset = queryset.model.objects.annotate(rank=SearchRank(F('search_vector'), query)).filter(rank__gte=0.8).order_by('-rank')[:20]
         return queryset
 

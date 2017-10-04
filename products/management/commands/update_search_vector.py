@@ -10,8 +10,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         print("Updating search vector for full text search..")
-        vector = SearchVector('name', weight='A') + \
-                 SearchVector('description', weight='B')
+        vector = SearchVector('name', weight='A') + SearchVector('description', weight='B') + SearchVector('brand', weight='C')
         Product.objects.update(search_vector=vector)
         print("Update complete.")
 
