@@ -28,10 +28,22 @@ class Product(models.Model):
 
     def __str__(self):
         return "<Product> %s - %s %s | %s" % (self.name, self.currency, self.price, self.shop)
-    
 
 
+COMPRESSION_FORMATS = (
+    ('gz', 'GZ'),
+    ('zip', 'ZIP'),
+)
 
 
+class AutomaticProductUpdate(models.Model):
+    shop = models.ForeignKey(Shop)
+    catalog_url = models.URLField(max_length=2000)
+    is_compressed = models.BooleanField(default=False)
+    compress_format = models.CharField(choices=COMPRESSION_FORMATS, max_length=20)
+    import_cmd = models.CharField(max_length=2000)
+    last_update = models.DateTimeField(null=True, blank=True)
+    local_file = models.CharField(max_length=2000, null=True, blank=True)
+    enabled = models.BooleanField(default=True)
 
 

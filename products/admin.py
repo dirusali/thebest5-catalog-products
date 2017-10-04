@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Shop, Product
+from .models import Shop, Product, AutomaticProductUpdate
+
 
 # Register your models here.
 
@@ -15,3 +16,9 @@ class ProductAdmin(admin.ModelAdmin):
     search_fields = ('name',)
     
 admin.site.register(Product, ProductAdmin)
+
+
+class AutomaticProductUpdateAdmin(admin.ModelAdmin):
+    list_display = ('shop', 'catalog_url', 'is_compressed', 'compress_format', 'import_cmd', 'last_update', 'local_file', 'enabled')
+    list_filter = ('shop',)
+admin.site.register(AutomaticProductUpdate, AutomaticProductUpdateAdmin)
