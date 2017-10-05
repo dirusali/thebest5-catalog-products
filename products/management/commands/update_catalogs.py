@@ -1,16 +1,44 @@
+from urllib.request import URLopener
+
 from django.core.management.base import BaseCommand, CommandError
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.contrib.postgres.aggregates import StringAgg
 
-from products.models import Product
+from products.models import Product, AutomaticProductUpdate
+from subprocess import call
+
+from thebest5_catalog_products.settings import VENV_PYTHON
 
 
 class Command(BaseCommand):
-    help = 'Import a csv into `Product` database.'
+    help = "Downloads the last catalogs for each shop and updates 'Product' database."
 
     def handle(self, *args, **options):
-        print("Updating search vector for full text search..")
-        vector = SearchVector('name', weight='A') + SearchVector('description', weight='B') + SearchVector('brand', weight='C')
-        Product.objects.update(search_vector=vector)
+        print("Updating catalogs..")
+        update_conf_list = AutomaticProductUpdate.objects.filter(enabled=True)
+        for conf in update_conf_list:
+            shop_name = conf.shop
+            print("Updating catalog for shop '%s'.." % shop_name)
+            print("Dowloading catalog file for shop '%s', from url:%s" % (shop_name, conf.catalog_url))
+            file = URLopener()
+            catalog_filename = './%s_catalog' % shop_name
+            if conf.is_compressed:
+                extension = conf.compress_format
+            else:
+                extension = '.csv'
+            catalog_filename += extension
+            file.retrieve(conf.catalog_url, catalog_filename)
+            print("Catalog file retrieved for shop '%s', local path:%s" % (shop_name, catalog_filename))
+            if conf.is_compressed:
+                print("COMPRESSION NOT SUPPORTED YET! ABORT.")
+                return
+            print("Improting catalog file to DB..")
+            call([VENV_PYTHON,
+                  "manage.py",
+                  "importcsv",
+                  catalog_filename,
+                  "--shop-name '%s'" % conf.shop.name,
+                  "--csv-column-delimiter '%s'" % conf.delimiter])
+            print("Catalog import complete.")
         print("Update complete.")
 
