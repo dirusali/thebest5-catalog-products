@@ -4,6 +4,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.contrib.postgres.aggregates import StringAgg
 
+from products.management.commands.importcsv import load_catalog_to_db
 from products.models import Product, AutomaticProductUpdate
 from subprocess import call
 
@@ -33,12 +34,10 @@ class Command(BaseCommand):
                 print("COMPRESSION NOT SUPPORTED YET! ABORT.")
                 return
             print("Improting catalog file to DB..")
-            call([VENV_PYTHON,
-                  "manage.py",
-                  "importcsv",
-                  catalog_filename,
-                  "--shop-name '%s'" % conf.shop.name,
-                  "--csv-column-delimiter '%s'" % conf.delimiter])
+            load_catalog_to_db(shop=conf.shop,
+                               catalog_path=catalog_filename,
+                               delimiter=conf.delimiter,
+                               delete_products=True)
             print("Catalog import complete.")
-        print("Update complete.")
+        print("Catalogs update complete.")
 

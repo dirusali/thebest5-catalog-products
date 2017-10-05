@@ -55,6 +55,39 @@ def convert_header(csv_header):
             header_[i] = col
     return header_
 
+
+def load_catalog_to_db(shop, catalog_path, delimiter=';', delete_products=True):
+    products_count = Product.objects.filter(shop=shop).count()
+    print("There are %d existing products for the shop %s ... " % (products_count, shop.name))
+    if delete_products:
+        # first delete all existing products.
+        print("Delete previously existing products for shop %s ... " % shop.name)
+        Product.objects.filter(shop=shop).delete()
+        print("Delete previously existing products for shop %s ... DONE " % shop.name)
+        print("-------------------------------------------------------- ")
+
+    print("Begin process of import products to shop %s " % shop.name)
+    print("Column delimiter to use is %s ..." % delimiter)
+    with open(catalog_path, 'rb') as file:
+        decoded_file = file.read().decode('utf-8')
+        io_string = io.StringIO(decoded_file)
+        reader = csv.reader(io_string, delimiter=delimiter)
+        header_ = next(reader)
+        header_cols = convert_header(header_)
+        for row in tqdm(reader, total=get_num_lines(catalog_path)):
+            try:
+                obj = Product()
+                obj.shop = shop
+                for i, field in enumerate(row):
+                    if header_cols[i] == 'price' or header_cols[i] == 'old_price':
+                        if not isfloat(field):
+                            field = None
+                    setattr(obj, header_cols[i], field)
+                obj.save()
+            except:
+                print(delimiter.join(row))
+
+
 class Command(BaseCommand):
     help = 'Import a csv into `Product` database.'
 
@@ -102,36 +135,9 @@ class Command(BaseCommand):
                 raise CommandError ("Shop with Id %s doesnt exist." % shop_id)
         
         if not os.path.exists(file_path):
-            raise CommandError ("The file %s doesnt exist." % file_path)
+            raise CommandError("The file %s doesnt exist." % file_path)
 
-        products_count = Product.objects.filter(shop=shop).count()
-        self.stdout.write("There are %d existing products for the shop %s ... " % (products_count, shop.name))
-        if not options['no_delete_products']:
-            #first delete all existing products.
-            self.stdout.write("Delete previously existing products for shop %s ... " % shop.name)
-            Product.objects.filter(shop=shop).delete()
-            self.stdout.write("Delete previously existing products for shop %s ... DONE " % shop.name)
-            self.stdout.write("-------------------------------------------------------- ")
-        
-        self.stdout.write("Begin process of import products to shop %s " % shop.name)
-        self.stdout.write("Column delimiter to use is %s ..." % options['column_delimiter'])
-        with open(file_path, 'rb') as file:
-            decoded_file = file.read().decode('utf-8')
-            io_string = io.StringIO(decoded_file)
-            reader = csv.reader(io_string, delimiter=options['column_delimiter'])
-            header_ = next(reader)
-            header_cols = convert_header(header_)
-            for row in tqdm(reader, total=get_num_lines(file_path)):
-                try:
-                    obj = Product()
-                    obj.shop = shop
-                    for i, field in enumerate(row):
-                        if header_cols[i] == 'price' or header_cols[i] == 'old_price':
-                            if not isfloat(field):
-                                field = None
-                        setattr(obj, header_cols[i], field)
-                    obj.save()
-                except:
-                    self.stdout.write(options['column_delimiter'].join(row))
-        self.stdout.write("Process finished!")
+        delete_old = not options['no_delete_products']
+        load_catalog_to_db(shop=shop, catalog_path=file_path, delimiter=options['column_delimiter'], delete_products=delete_old)
+        print("Process finished!")
 

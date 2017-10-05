@@ -42,7 +42,6 @@ class AutomaticProductUpdate(models.Model):
     is_compressed = models.BooleanField(default=False)
     compress_format = models.CharField(choices=COMPRESSION_FORMATS, max_length=20, null=True, blank=True)
     delimiter = models.CharField(max_length=2, default=';')
-    last_import_cmd = models.CharField(max_length=2000)
     last_update = models.DateTimeField(null=True, blank=True)
     local_file = models.CharField(max_length=2000, null=True, blank=True)
     enabled = models.BooleanField(default=True)
