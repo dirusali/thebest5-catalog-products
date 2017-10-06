@@ -31,8 +31,7 @@ class Product(models.Model):
 
 
 COMPRESSION_FORMATS = (
-    ('gz', 'GZ'),
-    ('zip', 'ZIP'),
+    ('zip', 'ZIP'), # The only one supported by now
 )
 
 
