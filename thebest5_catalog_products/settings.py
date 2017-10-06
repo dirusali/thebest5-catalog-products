@@ -138,6 +138,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#media-url
 MEDIA_URL = '/media/'
 
+# Path to store catalogs
+CATALOGS_ROOT = os.path.abspath(os.path.join(PARENT_DIR, 'catalogs/'))
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [

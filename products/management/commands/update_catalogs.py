@@ -1,3 +1,4 @@
+import os
 from urllib.request import URLopener
 
 from datetime import datetime
@@ -10,7 +11,7 @@ from products.management.commands.update_search_vector import update_search_vect
 from products.models import Product, AutomaticProductUpdate
 from subprocess import call
 
-from thebest5_catalog_products.settings import VENV_PYTHON
+from thebest5_catalog_products.settings import VENV_PYTHON, CATALOGS_ROOT
 
 
 class Command(BaseCommand):
@@ -26,7 +27,9 @@ class Command(BaseCommand):
             try:
                 print("Dowloading catalog file for shop '%s', from url:%s" % (shop_name, conf.catalog_url))
                 file = URLopener()
-                catalog_filename = './%s_catalog' % shop_name
+                if not os.path.exists(CATALOGS_ROOT):
+                    os.makedirs(CATALOGS_ROOT)
+                catalog_filename = CATALOGS_ROOT+'/%s_catalog' % shop_name
                 if conf.is_compressed:
                     extension = conf.compress_format
                 else:
