@@ -1,17 +1,22 @@
 import os
-from urllib.request import URLopener
-
+import shutil
+import zipfile
 from datetime import datetime
-from django.core.management.base import BaseCommand, CommandError
-from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
-from django.contrib.postgres.aggregates import StringAgg
-
+from urllib.request import URLopener
+from django.core.management.base import BaseCommand
 from products.management.commands.importcsv import load_catalog_to_db
 from products.management.commands.update_search_vector import update_search_vector
-from products.models import Product, AutomaticProductUpdate
-from subprocess import call
+from products.models import AutomaticProductUpdate
+from thebest5_catalog_products.settings import CATALOGS_ROOT
 
-from thebest5_catalog_products.settings import VENV_PYTHON, CATALOGS_ROOT
+
+def decompress_file(input_file, output_dir, compression_format):
+    if compression_format.lower() == 'zip':
+        zip_ref = zipfile.ZipFile(input_file, 'r')
+        zip_ref.extractall(output_dir)
+        zip_ref.close()
+        return True
+    return False
 
 
 class Command(BaseCommand):
@@ -31,23 +36,40 @@ class Command(BaseCommand):
                     os.makedirs(CATALOGS_ROOT)
                 catalog_filename = CATALOGS_ROOT+'/%s_catalog' % shop_name
                 if conf.is_compressed:
-                    extension = conf.compress_format
+                    extension = '.%s' % conf.compress_format
                 else:
                     extension = '.csv'
                 catalog_filename += extension
                 file.retrieve(conf.catalog_url, catalog_filename)
                 print("Catalog file retrieved for shop '%s', local path:%s" % (shop_name, catalog_filename))
                 if conf.is_compressed:
-                    print("COMPRESSION NOT SUPPORTED YET! ABORT.")
-                    return
+                    print("Decompressing file ...")
+                    # Get a new clean tmp dir
+                    tmp_dir = CATALOGS_ROOT + '/%s_tmp' % shop_name
+                    if os.path.exists(tmp_dir):
+                        shutil.rmtree(tmp_dir)
+                    os.makedirs(tmp_dir)
+                    # Extract catalog (should be a single file inside compressed file)
+                    if not decompress_file(input_file=catalog_filename,
+                                           output_dir=tmp_dir,
+                                           compression_format=conf.compress_format):
+                        print("Decompressing file ... ERROR")
+                        return -1
+                    # Copy and rename the extracted catalog file
+                    extracted_catalog = os.listdir(tmp_dir)[0]
+                    catalog_filename = catalog_filename[:-4] + ".csv"
+                    extracted_catalog_path = os.path.abspath(os.path.join(tmp_dir, extracted_catalog))
+                    shutil.copyfile(extracted_catalog_path, catalog_filename)
+                    print("Decompressing file ... DONE")
                 print("Import products from file to DB ...")
-                load_catalog_to_db(shop=conf.shop,
+                records_num = load_catalog_to_db(shop=conf.shop,
                                    catalog_path=catalog_filename,
                                    delimiter=conf.delimiter,
                                    delete_products=True,
                                    print_errors=False)
                 conf.last_update = datetime.now()
                 conf.local_file = catalog_filename
+                conf.records_num = records_num
                 conf.save()
                 print("Import products from file to DB ... DONE")
             except Exception as e:

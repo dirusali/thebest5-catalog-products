@@ -44,6 +44,7 @@ class AutomaticProductUpdate(models.Model):
     delimiter = models.CharField(max_length=2, default=';')
     last_update = models.DateTimeField(null=True, blank=True)
     local_file = models.CharField(max_length=2000, null=True, blank=True)
+    records_num = models.PositiveIntegerField(default=0, null=True, blank=True)
     enabled = models.BooleanField(default=True)
 
 

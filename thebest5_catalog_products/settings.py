@@ -139,7 +139,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 # Path to store catalogs
-CATALOGS_ROOT = os.path.abspath(os.path.join(PARENT_DIR, 'catalogs/'))
+CATALOGS_ROOT = os.path.abspath(os.path.join(BASE_DIR, 'catalogs/'))
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [

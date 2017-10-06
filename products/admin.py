@@ -19,6 +19,6 @@ admin.site.register(Product, ProductAdmin)
 
 
 class AutomaticProductUpdateAdmin(admin.ModelAdmin):
-    list_display = ('shop', 'catalog_url', 'delimiter', 'is_compressed', 'compress_format', 'last_update', 'local_file', 'enabled')
+    list_display = ('shop', 'catalog_url', 'delimiter', 'is_compressed', 'compress_format', 'last_update', 'records_num', 'local_file', 'enabled')
     list_filter = ('shop',)
 admin.site.register(AutomaticProductUpdate, AutomaticProductUpdateAdmin)

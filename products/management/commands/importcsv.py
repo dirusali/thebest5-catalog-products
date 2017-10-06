@@ -74,6 +74,7 @@ def load_catalog_to_db(shop, catalog_path, delimiter=';', delete_products=True, 
         reader = csv.reader(io_string, delimiter=delimiter)
         header_ = next(reader)
         header_cols = convert_header(header_)
+        records_num = 0
         for row in tqdm(reader, total=get_num_lines(catalog_path)):
             try:
                 obj = Product()
@@ -84,11 +85,12 @@ def load_catalog_to_db(shop, catalog_path, delimiter=';', delete_products=True, 
                             field = None
                     setattr(obj, header_cols[i], field)
                 obj.save()
+                records_num += 1 # Count records processed successfully
             except:
                 if print_errors:
                     print(delimiter.join(row))
                 continue
-
+        return records_num
 
 class Command(BaseCommand):
     help = 'Import a csv into `Product` database.'
