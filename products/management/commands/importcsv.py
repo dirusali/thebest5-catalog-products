@@ -56,7 +56,7 @@ def convert_header(csv_header):
     return header_
 
 
-def load_catalog_to_db(shop, catalog_path, delimiter=';', delete_products=True):
+def load_catalog_to_db(shop, catalog_path, delimiter=';', delete_products=True, print_errors=True):
     products_count = Product.objects.filter(shop=shop).count()
     print("There are %d existing products for the shop %s ... " % (products_count, shop.name))
     if delete_products:
@@ -85,7 +85,9 @@ def load_catalog_to_db(shop, catalog_path, delimiter=';', delete_products=True):
                     setattr(obj, header_cols[i], field)
                 obj.save()
             except:
-                print(delimiter.join(row))
+                if print_errors:
+                    print(delimiter.join(row))
+                continue
 
 
 class Command(BaseCommand):
