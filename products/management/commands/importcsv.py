@@ -71,6 +71,8 @@ def load_catalog_to_db(shop, catalog_path, delimiter=';', delete_products=True, 
     with open(catalog_path, 'rb') as file:
         decoded_file = file.read().decode('utf-8')
         io_string = io.StringIO(decoded_file)
+        if delimiter == 'tab':
+            delimiter = '\t'
         reader = csv.reader(io_string, delimiter=delimiter)
         header_ = next(reader)
         header_cols = convert_header(header_)
