@@ -13,7 +13,7 @@ def update_search_vector():
 
 
 class Command(BaseCommand):
-    help = 'Import a csv into `Product` database.'
+    help = 'Update search vector for full text search'
 
     def handle(self, *args, **options):
         update_search_vector()

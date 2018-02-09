@@ -41,6 +41,16 @@ map_columns = {
     'currencyid':'currency',
     'previousprice':'old_price',
     'shippingcost':'shipping_cost',
+    #Awin products: JD Sports
+    'merchant_image_url': 'image',
+    # 'aw_image_url' : 'image',
+    'product_name': 'name',
+    'aw_deep_link': 'url',
+    'aw_product_id': 'product_id',
+    'delivery_cost' : 'shipping_cost',
+    'stock_quantity': 'stock',
+    'product_price_old' : 'old_price',
+    'search_price' : 'price',
 }
 
 def convert_header(csv_header):
