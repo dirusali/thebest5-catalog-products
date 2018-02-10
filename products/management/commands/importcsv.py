@@ -51,6 +51,7 @@ map_columns = {
     'stock_quantity': 'stock',
     'product_price_old' : 'old_price',
     'search_price' : 'price',
+    'brand_name': 'brand',
 }
 
 def convert_header(csv_header):
