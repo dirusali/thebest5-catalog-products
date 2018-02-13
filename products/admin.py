@@ -5,7 +5,7 @@ from .models import Shop, Product, AutomaticProductUpdate
 # Register your models here.
 
 class ShopAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('name', 'logo')
 
 admin.site.register(Shop, ShopAdmin)
 
