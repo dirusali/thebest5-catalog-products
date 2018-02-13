@@ -37,7 +37,7 @@ COMPRESSION_FORMATS = (
 
 class AutomaticProductUpdate(models.Model):
     shop = models.ForeignKey(Shop)
-    catalog_url = models.URLField(max_length=2000)
+    catalog_url = models.URLField(max_length=2000, unique=True)
     is_compressed = models.BooleanField(default=True)
     compress_format = models.CharField(choices=COMPRESSION_FORMATS, max_length=20, null=True, blank=True, default='zip')
     delimiter = models.CharField(max_length=3, default=',')
@@ -45,5 +45,4 @@ class AutomaticProductUpdate(models.Model):
     local_file = models.CharField(max_length=2000, null=True, blank=True)
     records_num = models.PositiveIntegerField(default=0, null=True, blank=True)
     enabled = models.BooleanField(default=True)
-
 
