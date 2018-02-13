@@ -23,4 +23,6 @@ urlpatterns = [
     url(r'^api/', include('products.urls'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-admin.site.site_header = 'Catalog Product API'
+admin.site.site_header = 'TB5 Products Catalog API'
+# Change admin site title
+admin.site.site_title = 'TB5 Products Catalog'
