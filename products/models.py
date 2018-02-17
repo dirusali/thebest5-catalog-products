@@ -17,7 +17,7 @@ class Product(models.Model):
     price = models.FloatField(default=0)
     old_price = models.FloatField(blank=True, null=True)
     currency = models.CharField(max_length=3,blank=True)
-    name = models.CharField(max_length=2000,blank=True)
+    name = models.CharField(max_length=2000,blank=True, db_index=True)
     brand = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
     upc = models.CharField(max_length=12, blank=True, db_index=True)
