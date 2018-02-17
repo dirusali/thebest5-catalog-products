@@ -7,7 +7,11 @@ from products.models import Product
 
 def update_search_vector():
     print("Updating search vector for full text search..")
-    vector = SearchVector('name', weight='A') + SearchVector('description', weight='B') + SearchVector('brand',weight='C')
+    vector = SearchVector('name', weight='A') + SearchVector('description', weight='C') + SearchVector('brand',weight='D')
+    # vector = SearchVector('name', config='spanish', weight='A') + SearchVector('description', config='spanish',
+    #                                                                            weight='C') + SearchVector('brand',
+    #                                                                                                       config='spanish',
+    #                                                                                                       weight='D')
     Product.objects.update(search_vector=vector)
     print("Update complete.")
 

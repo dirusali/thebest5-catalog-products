@@ -1,10 +1,11 @@
 from django.db import models
 from django.contrib.postgres.search import SearchVectorField
-
+from django.contrib.postgres.indexes import GinIndex
 
 class Shop(models.Model):
     name = models.CharField(max_length=150)
     logo = models.FileField(blank=True, upload_to='shop_logos/')
+    language = models.CharField(max_length=150, default='spanish', blank=True, help_text='language to use in full text search')
 
     def __str__(self):
         return self.name
@@ -19,8 +20,8 @@ class Product(models.Model):
     name = models.CharField(max_length=2000,blank=True)
     brand = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
-    upc = models.CharField(max_length=12, blank=True)
-    ean = models.CharField(max_length=13, blank=True)
+    upc = models.CharField(max_length=12, blank=True, db_index=True)
+    ean = models.CharField(max_length=13, blank=True, db_index=True)
     image = models.URLField(max_length=2000, blank=True)
     shipping_cost = models.CharField(max_length=150, blank=True)
     stock = models.IntegerField(blank=True, null=True)
@@ -29,6 +30,10 @@ class Product(models.Model):
     def __str__(self):
         return "<Product> %s - %s %s | %s" % (self.name, self.currency, self.price, self.shop)
 
+    class Meta:
+        indexes = [
+            GinIndex(fields=['search_vector'], name='search_vector_idx'),
+        ]
 
 COMPRESSION_FORMATS = (
     ('zip', 'ZIP'), # The only one supported by now
