@@ -20,19 +20,8 @@ class FullTextSearchFilter(SearchFilter):
             # if there are only one search term return the super implementation without full text search
             return super(FullTextSearchFilter, self).filter_queryset(request, queryset, view)
 
-        # Old implementation
-        # if not search_fields or not search_terms:
-        #     return queryset
-        # Old implementation
-        # extra_weight = ['B','C','D']
-        # vector = SearchVector(search_fields[0], weight='A')
-        # for i,search_field in enumerate(search_fields[1:]):
-        #     vector += SearchVector(search_field, weight=extra_weight[i])
-        #
-        # query = SearchQuery(params)
-        # queryset = queryset.model.objects.annotate(rank=SearchRank(vector, query)).filter(rank__gte=0.8).order_by('-rank')[:20]
-
         query = SearchQuery(params)
-        queryset = queryset.model.objects.annotate(rank=SearchRank(F('search_vector'), query)).filter(rank__gte=0.8).order_by('-rank')[:20]
+        # queryset = queryset.model.objects.annotate(rank=SearchRank(F('search_vector'), query)).filter(rank__gte=0.8).order_by('-rank')[:20]
+        queryset = queryset.model.objects.filter(search_vector=query)[:20]
         return queryset
 

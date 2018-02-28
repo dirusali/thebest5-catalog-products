@@ -20,7 +20,7 @@ class ProductViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = ProductSerializer
     filter_backends = (filters.DjangoFilterBackend, FullTextSearchFilter)
     filter_class = ProductFilter
-    search_fields = ('name', 'description')
+    search_fields = ('name',)
 
 class ShopViewSet(viewsets.ReadOnlyModelViewSet):
     """
