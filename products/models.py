@@ -44,24 +44,25 @@ COMPRESSION_FORMATS = (
     ('zip', 'ZIP'), # The only one supported by now
 )
 
-class AffilliationNetowork(models.Model):
-    pass
-
-class ProductFeedList(models.Model):
-    affilliation_network = models.CharField(max_length=200, blank=True)
-
-
+class AffilliationNetwork(models.Model):
+    name = models.CharField(max_length=200)
 
 class AutomaticProductUpdate(models.Model):
+    affilliation_network = models.ForeignKey(AffilliationNetwork, blank=True, null=True)
+    advertiser_id = models.IntegerField(blank=True, null=True)
+    advertiser_name = models.CharField(max_length=200, blank=True, null=True)
     shop = models.ForeignKey(Shop)
+    feed_id = models.IntegerField(blank=True, null=True)
+    last_imported = models.DateField(blank=True, null=True, help_text='fecha de actualizacion del catalogo en la red')
     catalog_url = models.URLField(max_length=2000, unique=True)
     is_compressed = models.BooleanField(default=True)
     compress_format = models.CharField(choices=COMPRESSION_FORMATS, max_length=20, null=True, blank=True, default='zip')
     delimiter = models.CharField(max_length=3, default=',')
-    last_update = models.DateTimeField(null=True, blank=True)
+    last_update = models.DateTimeField(null=True, blank=True, help_text='fecha de actualizacion del catalogo')
     local_file = models.CharField(max_length=2000, null=True, blank=True)
     records_num = models.PositiveIntegerField(default=0, null=True, blank=True)
     enabled = models.BooleanField(default=True)
-    # TODO add logic for update a catalogs partially or gradually.
-    last_local_update = models.DateField(null=True, blank=True)
 
+    class Meta:
+        verbose_name = 'Products Feed'
+        verbose_name_plural = 'Product feed list'
