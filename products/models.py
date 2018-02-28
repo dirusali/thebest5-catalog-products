@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.postgres.search import SearchVectorField
+from django.contrib.postgres.search import SearchVectorField, SearchVector
 from django.contrib.postgres.indexes import GinIndex
 
 class Shop(models.Model):
@@ -27,17 +27,29 @@ class Product(models.Model):
     stock = models.IntegerField(blank=True, null=True)
     search_vector = SearchVectorField(null=True)
 
-    def __str__(self):
-        return "<Product> %s - %s %s | %s" % (self.name, self.currency, self.price, self.shop)
-
     class Meta:
         indexes = [
             GinIndex(fields=['search_vector'], name='search_vector_idx'),
         ]
 
+    def __str__(self):
+        return "<Product> %s - %s %s | %s" % (self.name, self.currency, self.price, self.shop)
+
+    def save(self, *args, **kwargs):
+        # Update de search vector field after each update
+        self.search_vector = SearchVector('name', weight='A')
+        super().save(*args, **kwargs)
+
 COMPRESSION_FORMATS = (
     ('zip', 'ZIP'), # The only one supported by now
 )
+
+class AffilliationNetowork(models.Model):
+    pass
+
+class ProductFeedList(models.Model):
+    affilliation_network = models.CharField(max_length=200, blank=True)
+
 
 
 class AutomaticProductUpdate(models.Model):
@@ -50,4 +62,6 @@ class AutomaticProductUpdate(models.Model):
     local_file = models.CharField(max_length=2000, null=True, blank=True)
     records_num = models.PositiveIntegerField(default=0, null=True, blank=True)
     enabled = models.BooleanField(default=True)
+    # TODO add logic for update a catalogs partially or gradually.
+    last_local_update = models.DateField(null=True, blank=True)
 
