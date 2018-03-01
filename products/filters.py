@@ -21,7 +21,7 @@ class FullTextSearchFilter(SearchFilter):
             return super(FullTextSearchFilter, self).filter_queryset(request, queryset, view)
 
         query = SearchQuery(params)
-        # queryset = queryset.model.objects.annotate(rank=SearchRank(F('search_vector'), query)).filter(rank__gte=0.8).order_by('-rank')[:20]
-        queryset = queryset.model.objects.filter(search_vector=query)[:20]
+        queryset = queryset.model.objects.annotate(rank=SearchRank(F('search_vector'), query)).filter(rank__gte=0.8).order_by('-rank')[:20]
+        # queryset = queryset.model.objects.filter(search_vector=query)[:20]
         return queryset
 
