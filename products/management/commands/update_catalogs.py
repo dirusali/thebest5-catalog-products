@@ -21,9 +21,10 @@ def decompress_file(input_file, output_dir, compression_format):
 
 class Command(BaseCommand):
     help = "Downloads the last catalogs for each shop and updates 'Product' database."
+
     def handle(self, *args, **options):
         print("Updating catalogs..")
-        update_conf_list = AutomaticProductUpdate.objects.filter(update_today=True)
+        update_conf_list = AutomaticProductUpdate.objects.filter(enabled=True)
         for conf in update_conf_list:
             shop_name = conf.shop
             print("Updating catalog for shop '%s'.." % shop_name)
@@ -78,3 +79,4 @@ class Command(BaseCommand):
         print("All catalogs processed.")
         update_search_vector()
         print("Catalogs update complete.")
+
