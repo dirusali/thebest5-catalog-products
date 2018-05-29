@@ -1,4 +1,3 @@
-#from dateutil import parser
 import csv
 import requests
 from datetime import date
