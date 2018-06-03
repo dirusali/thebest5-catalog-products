@@ -103,8 +103,9 @@ def load_catalog_to_db(shop, catalog_path, delimiter=';', delete_products=True, 
                 if print_errors:
                     print(delimiter.join(row))
                 continue
-        print ("SE HAN IMPORTADO ------ %s  CATALOGOS") % (records_num)
+                
         return records_num
+        print (records_num)
 
 class Command(BaseCommand):
     help = 'Import a csv into `Product` database.'
