@@ -75,7 +75,7 @@ class Command(BaseCommand):
             except Exception as e:
                 print("ERROR Importing updating catalog for shop %s [SKIPPED]\n%s" %(shop_name, e))
                 continue
-            print("-------------------------------------------------------- ")
+            print("------------------------------------------------------ ")
         print("All catalogs processed.")
         update_search_vector()
         print("Catalogs update complete.")
