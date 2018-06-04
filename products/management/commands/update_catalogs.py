@@ -71,7 +71,7 @@ class Command(BaseCommand):
                 conf.local_file = catalog_filename
                 conf.records_num = records_num
                 conf.save()
-                print("IMPORt DONE SUCCESSFULLY. CATALOG_PATH: %s") % (catalog_filename)
+                #print("IMPORt DONE SUCCESSFULLY. CATALOG_PATH: %s") % (catalog_filename)
             except Exception as e:
                 print("ERROR Importing updating catalog for shop %s [SKIPPED]\n%s" %(shop_name, e))
                 continue
