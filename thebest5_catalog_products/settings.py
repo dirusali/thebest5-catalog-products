@@ -136,7 +136,7 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.abspath(os.path.join(BASE_DIR, 'media/shop_logos/'))
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#media-url
-MEDIA_URL = '/media/'
+MEDIA_URL = '/media/shop-logos/'
 
 # Path to store catalogs
 CATALOGS_ROOT = os.path.abspath(os.path.join(BASE_DIR, 'catalogs/'))
