@@ -21,7 +21,12 @@ from django.conf import settings
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/', include('products.urls'))
-    url(r'^media/', static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 ] #+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if settings.DEBUG:
+    # static files (images, css, javascript, etc.)
+    urlpatterns += patterns('',
+        (r'^media/(?P<path>.*)$', 'django.views.static.serve', {
+        'document_root': settings.MEDIA_ROOT}))
 
 admin.site.site_header = 'Catalog Product API'
