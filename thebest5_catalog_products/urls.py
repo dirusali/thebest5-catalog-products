@@ -23,10 +23,9 @@ urlpatterns = [
     url(r'^api/', include('products.urls'))
 ] #+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-if settings.DEBUG:
-    # static files (images, css, javascript, etc.)
-    urlpatterns += patterns('',
-        (r'^media/(?P<path>.*)$', 'django.views.static.serve', {
-        'document_root': settings.MEDIA_ROOT}))
+urlpatterns = [
+    url(r'^admin/', admin.site.urls),
+    url(r'^api/', include('products.urls'))
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-admin.site.site_header = 'Catalog Product API'
+admin.site.site_header = 'TB5 Products Catalog API'
