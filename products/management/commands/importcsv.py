@@ -5,10 +5,9 @@ import mmap
 from django.core.management.base import BaseCommand, CommandError
 from products.models import Product, Shop
 from tqdm import tqdm
-from update_catalogs import decompress_file
+import zipfile
 
 def get_num_lines(file_path):
-    file_path = decompress_file(file_path, file_path, zip)
     fp = open(file_path, "r+")
     buf = mmap.mmap(fp.fileno(), 0)
     #initialize lines (counter) with -1 to subtract the header
@@ -70,6 +69,9 @@ def load_catalog_to_db(shop, catalog_path, delimiter=';', delete_products=True, 
 
     print("Begin process of import products to shop %s " % shop.name)
     print("Column delimiter to use is %s ..." % delimiter)
+    zip_ref = catalog_path.ZipFile(catalog_path, 'r')
+    zip_ref.extractall(catalog_path)
+    zip_ref.close()
     with open(catalog_path, 'rb') as file:
         decoded_file = file.read().decode('utf-8')
         io_string = io.StringIO(decoded_file)
@@ -142,7 +144,7 @@ class Command(BaseCommand):
         
         if not os.path.exists(file_path):
             raise CommandError("The file %s doesnt exist." % file_path)
-
+        
         delete_old = not options['no_delete_products']
         load_catalog_to_db(shop=shop, catalog_path=file_path, delimiter=options['column_delimiter'], delete_products=delete_old)
         print("Process finished!")
