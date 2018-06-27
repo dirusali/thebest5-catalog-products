@@ -7,13 +7,9 @@ from products.models import Product, Shop
 from tqdm import tqdm
 from update_catalogs import decompress_file
 
-
-    
-
-
 def get_num_lines(file_path):
-    csv_file = decompress_file(file_path, file_path, zip)
-    fp = open(csv_file, "r+")
+    file_path = decompress_file(file_path, file_path, zip)
+    fp = open(file_path, "r+")
     buf = mmap.mmap(fp.fileno(), 0)
     #initialize lines (counter) with -1 to subtract the header
     lines = -1
