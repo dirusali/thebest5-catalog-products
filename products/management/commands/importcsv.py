@@ -5,6 +5,8 @@ import mmap
 from django.core.management.base import BaseCommand, CommandError
 from products.models import Product, Shop
 from tqdm import tqdm
+from update_catalogs import decompress_file
+
 
 def get_num_lines(file_path):
     fp = open(file_path, "r+")
