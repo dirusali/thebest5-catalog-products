@@ -8,8 +8,12 @@ from tqdm import tqdm
 from update_catalogs import decompress_file
 
 
+    
+
+
 def get_num_lines(file_path):
-    fp = open(file_path, "r+")
+    csv_file = decompress(file_path)
+    fp = open(csv_file, "r+")
     buf = mmap.mmap(fp.fileno(), 0)
     #initialize lines (counter) with -1 to subtract the header
     lines = -1
