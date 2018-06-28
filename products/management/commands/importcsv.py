@@ -5,7 +5,6 @@ import mmap
 from django.core.management.base import BaseCommand, CommandError
 from products.models import Product, Shop
 from tqdm import tqdm
-import zipfile
 
 def get_num_lines(file_path):
     fp = open(file_path, "r+")
@@ -42,6 +41,17 @@ map_columns = {
     'currencyid':'currency',
     'previousprice':'old_price',
     'shippingcost':'shipping_cost',
+    #Awin products: JD Sports
+    'merchant_image_url': 'image',
+    # 'aw_image_url' : 'image',
+    'product_name': 'name',
+    'aw_deep_link': 'url',
+    'aw_product_id': 'product_id',
+    'delivery_cost' : 'shipping_cost',
+    'stock_quantity': 'stock',
+    'product_price_old' : 'old_price',
+    'search_price' : 'price',
+    'brand_name': 'brand',
 }
 
 def convert_header(csv_header):
@@ -69,12 +79,11 @@ def load_catalog_to_db(shop, catalog_path, delimiter=';', delete_products=True, 
 
     print("Begin process of import products to shop %s " % shop.name)
     print("Column delimiter to use is %s ..." % delimiter)
-    zip_ref = catalog_path.ZipFile(catalog_path, 'r')
-    zip_ref.extractall(catalog_path)
-    zip_ref.close()
     with open(catalog_path, 'rb') as file:
         decoded_file = file.read().decode('utf-8')
         io_string = io.StringIO(decoded_file)
+        if delimiter == 'tab':
+            delimiter = '\t'
         reader = csv.reader(io_string, delimiter=delimiter)
         header_ = next(reader)
         header_cols = convert_header(header_)
@@ -94,7 +103,9 @@ def load_catalog_to_db(shop, catalog_path, delimiter=';', delete_products=True, 
                 if print_errors:
                     print(delimiter.join(row))
                 continue
+                
         return records_num
+        #print (records_num)
 
 class Command(BaseCommand):
     help = 'Import a csv into `Product` database.'
@@ -144,8 +155,7 @@ class Command(BaseCommand):
         
         if not os.path.exists(file_path):
             raise CommandError("The file %s doesnt exist." % file_path)
-        
+
         delete_old = not options['no_delete_products']
         load_catalog_to_db(shop=shop, catalog_path=file_path, delimiter=options['column_delimiter'], delete_products=delete_old)
         print("Process finished!")
-
