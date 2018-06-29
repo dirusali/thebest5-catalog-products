@@ -7,6 +7,7 @@ from django.core.management.base import BaseCommand
 from products.management.commands.importcsv import load_catalog_to_db
 from products.management.commands.update_search_vector import update_search_vector
 from products.models import AutomaticProductUpdate
+from products.model import Product
 from thebest5_catalog_products.settings import CATALOGS_ROOT
 from postgres_copy import CopyManager
 
