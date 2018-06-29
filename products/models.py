@@ -11,7 +11,7 @@ class Shop(models.Model):
     
 class Product(models.Model):
     product_id = models.CharField(max_length=50, blank=True, null=True)
-    shop = models.ForeignKey
+    shop = models.ForeignKey(Shop)
     url = models.URLField(max_length=2000, null=True)
     price = models.FloatField(default=0, null=True)
     old_price = models.FloatField(blank=True, null=True)
