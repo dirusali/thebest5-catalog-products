@@ -29,7 +29,7 @@ class Product(models.Model):
     category_name = models.CharField(max_length=255, blank=True)
     terms_of_contract = models.CharField(max_length=2000, blank=True)
     size_stock_amount = models.FloatField(default=0)
-    aw_image_url = models.URLField(max_length=2000)
+    aw_image_url = models.URLField(max_length=2000, null = True)
     objects = CopyManager()
 
     def __str__(self):
