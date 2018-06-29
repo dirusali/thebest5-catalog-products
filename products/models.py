@@ -25,6 +25,10 @@ class Product(models.Model):
     shipping_cost = models.CharField(max_length=150, blank=True)
     stock = models.IntegerField(blank=True, null=True)
     search_vector = SearchVectorField(null=True)
+    valid_from = models.CharField(max_length=255, blank=True)
+    category_name = models.CharField(max_length=255, blank=True)
+    terms_of_contract = models.CharField(max_length=2000, blank=True)
+    size_stock_amount = models.FloatField(default=0)
     objects = CopyManager()
 
     def __str__(self):
