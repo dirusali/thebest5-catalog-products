@@ -64,12 +64,10 @@ class Command(BaseCommand):
                     shutil.copyfile(extracted_catalog_path, catalog_filename)
                     print("Decompressing file ... DONE")
                 print("Import products from file to DB ...")
-                records_num = Product.objects.from_csv(extracted_catalog_path, 
-                                                       dict(name = 'product_name',
-                                                       url = 'URL))
+                records_num = Product.objects.from_csv(extracted_catalog_path, dict(name = 'product_name', url = 'URL'))                                       
                 conf.last_update = datetime.now()
                 conf.local_file = catalog_filename
-                #conf.records_num = records_num
+                conf.records_num = records_num
                 conf.save()
                 print("Import products from file to DB ... DONE")
             except Exception as e:
