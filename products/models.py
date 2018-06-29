@@ -25,6 +25,7 @@ class Product(models.Model):
     shipping_cost = models.CharField(max_length=150, blank=True)
     stock = models.IntegerField(blank=True, null=True)
     search_vector = SearchVectorField(null=True)
+    objects = CopyManager()
 
     def __str__(self):
         return "<Product> %s - %s %s | %s" % (self.name, self.currency, self.price, self.shop)
