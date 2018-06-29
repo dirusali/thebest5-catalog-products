@@ -67,7 +67,7 @@ class Command(BaseCommand):
                 records_num = Product.objects.from_csv(extracted_catalog_path, url, name)
                 conf.last_update = datetime.now(
                 conf.local_file = catalog_filename
-                conf.records_num = records_num
+                #conf.records_num = records_num
                 conf.save()
                 print("Import products from file to DB ... DONE")
             except Exception as e:
