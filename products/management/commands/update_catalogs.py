@@ -77,6 +77,4 @@ class Command(BaseCommand):
                 continue
             print("------------------------------------------------------ ")
         print("All catalogs processed.")
-        update_search_vector()
-        print("Catalogs update complete.")
-
+       
