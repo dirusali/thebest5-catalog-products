@@ -8,6 +8,7 @@ from products.management.commands.importcsv import load_catalog_to_db
 from products.management.commands.update_search_vector import update_search_vector
 from products.models import AutomaticProductUpdate
 from thebest5_catalog_products.settings import CATALOGS_ROOT
+from postgres_copy import CopyManager
 
 
 def decompress_file(input_file, output_dir, compression_format):
