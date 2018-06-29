@@ -64,7 +64,7 @@ class Command(BaseCommand):
                     shutil.copyfile(extracted_catalog_path, catalog_filename)
                     print("Decompressing file ... DONE")
                 print("Import products from file to DB ...")
-                records_num = Product.objects.from_csv(extracted_catalog_path, dict(name = 'product_name'), force_not_null = "shop_id")                                       
+                records_num = Product.objects.from_csv(extracted_catalog_path, dict(name = 'product_name'), force_not_null = shop_id")                                       
                 conf.last_update = datetime.now()
                 conf.local_file = catalog_filename
                 conf.records_num = records_num
