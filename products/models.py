@@ -35,7 +35,7 @@ class Product(models.Model):
     def __str__(self):
         return "<Product> %s - %s %s | %s" % (self.name, self.currency, self.price, self.shop)
 
-
+#
 COMPRESSION_FORMATS = (
     ('zip', 'ZIP'), # The only one supported by now
 )
