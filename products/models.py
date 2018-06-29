@@ -12,8 +12,8 @@ class Shop(models.Model):
 class Product(models.Model):
     product_id = models.CharField(max_length=50, blank=True, null=True)
     shop = models.ForeignKey(Shop)
-    url = models.URLField(max_length=2000)
-    price = models.FloatField(default=0)
+    url = models.URLField(max_length=2000, null=True)
+    price = models.FloatField(default=0, null=True)
     old_price = models.FloatField(blank=True, null=True)
     currency = models.CharField(max_length=3,blank=True)
     name = models.CharField(max_length=2000,blank=True)
@@ -29,7 +29,7 @@ class Product(models.Model):
     category_name = models.CharField(max_length=255, blank=True)
     terms_of_contract = models.CharField(max_length=2000, blank=True)
     size_stock_amount = models.FloatField(default=0)
-    aw_image_url = models.URLField(max_length=2000, null = True)
+    aw_image_url = models.URLField(max_length=2000, null=True)
     objects = CopyManager()
 
     def __str__(self):
