@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.postgres.search import SearchVectorField
-
+from postgres_copy import CopyManager
 
 class Shop(models.Model):
     name = models.CharField(max_length=150)
