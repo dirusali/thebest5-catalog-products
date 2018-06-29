@@ -7,7 +7,7 @@ from django.core.management.base import BaseCommand
 from products.management.commands.importcsv import load_catalog_to_db
 from products.management.commands.update_search_vector import update_search_vector
 from products.models import AutomaticProductUpdate
-from products.model import Product
+from products.models import Product
 from thebest5_catalog_products.settings import CATALOGS_ROOT
 from postgres_copy import CopyManager
 
@@ -64,7 +64,7 @@ class Command(BaseCommand):
                     shutil.copyfile(extracted_catalog_path, catalog_filename)
                     print("Decompressing file ... DONE")
                 print("Import products from file to DB ...")
-                records_num = Product.objects.from_csv(extracted_catalog_path)
+                records_num = Product.objects.from_csv(extracted_catalog_path, delimiter = conf.delimiter)
                 conf.last_update = datetime.now()
                 conf.local_file = catalog_filename
                 conf.records_num = records_num
