@@ -18,7 +18,7 @@ class Product(models.Model):
     currency = models.CharField(max_length=3,null=True)
     name = models.CharField(max_length=2000,null=True)
     brand = models.CharField(max_length=255, null=True)
-    description = models.TextField(nullTrue)
+    description = models.TextField(null=True)
     upc = models.CharField(max_length=12, null=True)
     ean = models.CharField(max_length=13, null=True)
     image = models.URLField(max_length=2000, null=True)
