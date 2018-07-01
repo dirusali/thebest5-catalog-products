@@ -7,9 +7,7 @@ from django.core.management.base import BaseCommand
 from products.management.commands.importcsv import load_catalog_to_db
 from products.management.commands.update_search_vector import update_search_vector
 from products.models import AutomaticProductUpdate
-from products.models import Product
 from thebest5_catalog_products.settings import CATALOGS_ROOT
-from postgres_copy import CopyManager
 
 
 def decompress_file(input_file, output_dir, compression_format):
@@ -64,16 +62,19 @@ class Command(BaseCommand):
                     shutil.copyfile(extracted_catalog_path, catalog_filename)
                     print("Decompressing file ... DONE")
                 print("Import products from file to DB ...")
-                records_num = Product.objects.from_csv(extracted_catalog_path, dict(shop = 'merchant_name', name = 'product_name'))                                       
+                records_num = load_catalog_to_db(shop=conf.shop,
+                                   catalog_path=catalog_filename,
+                                   delimiter=conf.delimiter,
+                                   delete_products=True,
+                                   print_errors=False)
                 conf.last_update = datetime.now()
                 conf.local_file = catalog_filename
                 conf.records_num = records_num
                 conf.save()
-                print("Import products from file to DB ... DONE")
+                #print("IMPORt DONE SUCCESSFULLY. CATALOG_PATH: %s") % (catalog_filename)
             except Exception as e:
                 print("ERROR Importing updating catalog for shop %s [SKIPPED]\n%s" %(shop_name, e))
                 continue
-            print("-------------------------------------------------------- ")
+            print("------------------------------------------------------ ")
         print("All catalogs processed.")
-        
-
+       
