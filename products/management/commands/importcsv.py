@@ -5,6 +5,8 @@ import mmap
 from django.core.management.base import BaseCommand, CommandError
 from products.models import Product, Shop
 from tqdm import tqdm
+from postgres_copy import CopyManager
+
 
 def get_num_lines(file_path):
     fp = open(file_path, "r+")
@@ -88,21 +90,22 @@ def load_catalog_to_db(shop, catalog_path, delimiter=';', delete_products=True, 
         header_ = next(reader)
         header_cols = convert_header(header_)
         records_num = 0
-        for row in tqdm(reader, total=get_num_lines(catalog_path)):
-            try:
-                obj = Product()
-                obj.shop = shop
-                for i, field in enumerate(row):
-                    if header_cols[i] == 'price' or header_cols[i] == 'old_price':
-                        if not isfloat(field):
-                            field = None
-                    setattr(obj, header_cols[i], field)
-                obj.save()
-                records_num += 1 # Count records processed successfully
-            except:
-                if print_errors:
-                    print(delimiter.join(row))
-                continue
+        records_num = Product.objects.from_csv (catalog_path)
+        #for row in tqdm(reader, total=get_num_lines(catalog_path)):
+        #    try:
+        #        obj = Product()
+        #        obj.shop = shop
+        #        for i, field in enumerate(row):
+        #            if header_cols[i] == 'price' or header_cols[i] == 'old_price':
+        #                if not isfloat(field):
+        #                    field = None
+        #            setattr(obj, header_cols[i], field)
+        #        obj.save()
+        #        records_num += 1 # Count records processed successfully
+        #    except:
+        #        if print_errors:
+         #           print(delimiter.join(row))
+          #      continue
                 
         return records_num
         #print (records_num)
@@ -158,4 +161,4 @@ class Command(BaseCommand):
 
         delete_old = not options['no_delete_products']
         load_catalog_to_db(shop=shop, catalog_path=file_path, delimiter=options['column_delimiter'], delete_products=delete_old)
-        print("Process finished!")
+        print("Process finished with %s products saved") % records_num
