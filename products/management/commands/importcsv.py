@@ -103,9 +103,9 @@ def load_catalog_to_db(shop, catalog_path, delimiter=';', delete_products=True, 
         #        obj.save()
         #        records_num += 1 # Count records processed successfully
         #    except:
-                if print_errors:
+        #        if print_errors:
          #           print(delimiter.join(row))
-                continue
+          #      continue
                 
         return records_num
         #print (records_num)
