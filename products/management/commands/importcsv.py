@@ -90,8 +90,8 @@ def load_catalog_to_db(shop, catalog_path, delimiter=';', delete_products=True, 
         header_ = next(reader)
         header_cols = convert_header(header_)
         records_num = 0
-        records_num = Product.objects.from_csv (catalog_path)
-        #for row in tqdm(reader, total=get_num_lines(catalog_path)):
+        records_num = Product.objects.from_csv (catalog_path, dict(name = 'product_name'))
+                                                    #for row in tqdm(reader, total=get_num_lines(catalog_path)):
         #    try:
         #        obj = Product()
         #        obj.shop = shop
